@@ -33,10 +33,12 @@ heading2.pack()
 inputFrame = ttk.Frame(master = window)
 url = tk.StringVar()
 textBox = ttk.Entry(master = inputFrame, textvariable = url, width = 50)
-mp4Button = ttk.Button(master = inputFrame, text = "Download", command = mp4ButtonClick)
+mp4Button = ttk.Button(master = inputFrame, text = "Download mp4", command = mp4ButtonClick)
+mp3Button = ttk.Button(master = inputFrame, text = "Download mp3", command = mp3ButtonClick)
 
-textBox.pack(side = "left", padx = 10)
-mp4Button.pack(side = "left")
+textBox.pack(side = "left", padx = 5)
+mp4Button.pack(side = "left", padx = 5)
+mp3Button.pack(side = "left")
 inputFrame.pack(pady = 20)
 
 # Outputs
