@@ -27,7 +27,7 @@ downloadButton = ttk.Button(master = inputFrame, text = "Download", command = do
 
 textBox.pack(side = "left", padx = 10)
 downloadButton.pack(side = "left")
-inputFrame.pack(pady = 5)
+inputFrame.pack(pady = 20)
 
 # Outputs
 outString = tk.StringVar()
