@@ -1,12 +1,22 @@
 import tkinter as tk
 import ttkbootstrap as ttk
+import os
 from pytube import YouTube
 
+videoDirectory = os.path.join("Downloads", "Video")
+audioDirectory = os.path.join("Downloads", "Audio")
+
 # Functions
-def downloadButtonClick():
-    outString.set("Downloading please wait")
+def mp4ButtonClick():
     urlString = url.get()
-    print(urlString)
+    yt = YouTube(urlString)
+    outString.set("Downloading...")
+    titleString.set(yt.title)
+    yd = yt.streams.get_highest_resolution()
+    yd.download(videoDirectory)
+
+def mp3ButtonClick():
+    titleString.set("mp3 button pressed")
 
 # Window
 window = ttk.Window(themename = "darkly")
@@ -22,17 +32,20 @@ heading2.pack()
 # Inputs
 inputFrame = ttk.Frame(master = window)
 url = tk.StringVar()
-textBox = ttk.Entry(master = inputFrame, textvariable = url)
-downloadButton = ttk.Button(master = inputFrame, text = "Download", command = downloadButtonClick)
+textBox = ttk.Entry(master = inputFrame, textvariable = url, width = 50)
+mp4Button = ttk.Button(master = inputFrame, text = "Download", command = mp4ButtonClick)
 
 textBox.pack(side = "left", padx = 10)
-downloadButton.pack(side = "left")
+mp4Button.pack(side = "left")
 inputFrame.pack(pady = 20)
 
 # Outputs
 outString = tk.StringVar()
+titleString = tk.StringVar()
 outLabel = ttk.Label(master = window, font = "Calibri 24", textvariable = outString)
+vidTitle = ttk.Label(master = window, font = "Calibri 12", textvariable = titleString)
 outLabel.pack(pady = 20)
+vidTitle.pack()
 
 # Run
 window.mainloop()
