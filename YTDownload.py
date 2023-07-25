@@ -7,16 +7,24 @@ videoDirectory = os.path.join("Downloads", "Video")
 audioDirectory = os.path.join("Downloads", "Audio")
 
 # Functions
-def mp4ButtonClick():
+def videoButtonClick():
     urlString = url.get()
     yt = YouTube(urlString)
-    outString.set("Downloading...")
+    outString.set("Downloading Video...")
     titleString.set(yt.title)
     yd = yt.streams.get_highest_resolution()
     yd.download(videoDirectory)
+    completeString.set("Download Complete")
 
-def mp3ButtonClick():
-    titleString.set("mp3 button pressed")
+def audioButtonClick():
+    urlString = url.get()
+    yt = YouTube(urlString)
+    outString.set("Downloading Audio...")
+    titleString.set(yt.title)
+    yd = yt.streams.get_audio_only()
+    yd.download(audioDirectory)
+    completeString.set("Download Complete")
+
 
 # Window
 window = ttk.Window(themename = "darkly")
@@ -32,22 +40,27 @@ heading2.pack()
 # Inputs
 inputFrame = ttk.Frame(master = window)
 url = tk.StringVar()
-textBox = ttk.Entry(master = inputFrame, textvariable = url, width = 50)
-mp4Button = ttk.Button(master = inputFrame, text = "Download mp4", command = mp4ButtonClick)
-mp3Button = ttk.Button(master = inputFrame, text = "Download mp3", command = mp3ButtonClick)
+textBox = ttk.Entry(master = inputFrame, textvariable = url, width = 75)
+videoButton = ttk.Button(master = inputFrame, text = "Download Video", command = videoButtonClick, width = 20)
+audioButton = ttk.Button(master = inputFrame, text = "Download Only Audio", command = audioButtonClick)
 
 textBox.pack(side = "left", padx = 5)
-mp4Button.pack(side = "left", padx = 5)
-mp3Button.pack(side = "left")
+videoButton.pack(side = "left", padx = 5)
+audioButton.pack(side = "left")
 inputFrame.pack(pady = 20)
 
 # Outputs
 outString = tk.StringVar()
 titleString = tk.StringVar()
+completeString = tk.StringVar()
+
 outLabel = ttk.Label(master = window, font = "Calibri 24", textvariable = outString)
 vidTitle = ttk.Label(master = window, font = "Calibri 12", textvariable = titleString)
+completeLabel = ttk.Label(master = window, font = "Calibri 24", textvariable = completeString)
+
 outLabel.pack(pady = 20)
 vidTitle.pack()
+completeLabel.pack(pady = 30)
 
 # Run
 window.mainloop()
