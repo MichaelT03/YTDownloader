@@ -7,39 +7,53 @@ from pytube import YouTube
 videoDirectory = os.path.join("Downloads", "Video")
 audioDirectory = os.path.join("Downloads", "Audio")
 
+# Functions
+
+def validateUrl(urlString):
+    print(urlString)
+
 def printMessage(message):
     outString.set(message)
     
-    window.after(5000)
+    # Wait 2 seconds before beginning download
+    window.after(2000)
 
 def clearMessage():
     outString.set("")
 
+## Video functions
 def getVideo():
     printMessage("Downloading video...")
     urlString = url.get()
     yt = YouTube(urlString)
     titleString.set(yt.title)
     
-    #create a thread for downloading a video do that the GUI doesn't lock up and crash
+    #create a thread for downloading a video so that the GUI doesn't lock up and crash if it takes to long to download
     downloadThread = threading.Thread(target = downloadVideo, args = (yt,))
     downloadThread.start()
 
-# Functions
 def downloadVideo(yt):
     yd = yt.streams.get_highest_resolution()
     yd.download(videoDirectory)
 
     window.after(0, lambda: completeString.set("Download complete"))
 
-def audioButtonClick():
+## Audio functions
+def getAudio():
     printMessage("Downloading audio...")
     urlString = url.get()
     yt = YouTube(urlString)
     titleString.set(yt.title)
+
+    # agrs has a comma because it is a touple
+    downloadThread = threading.Thread(target = downloadAudio, args = (yt,))
+    downloadThread.start()
+
+def downloadAudio(yt):
     yd = yt.streams.get_audio_only()
     yd.download(audioDirectory)
-    completeString.set("Download Complete")
+
+    window.after(0, lambda: completeString.set("Download complete"))
 
 
 # Window
@@ -58,7 +72,7 @@ inputFrame = ttk.Frame(master = window)
 url = tk.StringVar()
 textBox = ttk.Entry(master = inputFrame, textvariable = url, width = 75)
 videoButton = ttk.Button(master = inputFrame, text = "Download Video", command = getVideo, width = 20)
-audioButton = ttk.Button(master = inputFrame, text = "Download Only Audio", command = audioButtonClick)
+audioButton = ttk.Button(master = inputFrame, text = "Download Only Audio", command = getAudio)
 
 textBox.pack(side = "left", padx = 5)
 videoButton.pack(side = "left", padx = 5)
