@@ -1,5 +1,6 @@
 import tkinter as tk
 import ttkbootstrap as ttk
+import re
 import os
 import threading
 from pytube import YouTube
@@ -9,8 +10,17 @@ audioDirectory = os.path.join("Downloads", "Audio")
 
 # Functions
 
-def validateUrl(urlString):
-    print(urlString)
+def validateVideoUrl():
+    outString.set(" ")
+    titleString.set(" ")
+    completeString.set(" ")
+    
+    urlString = url.get()
+
+    if not re.match("https?://(www\.)?youtube\.com/watch\?v=", urlString):
+        outString.set("Invalid YouTube URL")
+    else:
+        getVideo(urlString)
 
 def printMessage(message):
     outString.set(message)
@@ -22,9 +32,8 @@ def clearMessage():
     outString.set("")
 
 ## Video functions
-def getVideo():
+def getVideo(urlString):
     printMessage("Downloading video...")
-    urlString = url.get()
     yt = YouTube(urlString)
     titleString.set(yt.title)
     
@@ -71,7 +80,7 @@ heading2.pack()
 inputFrame = ttk.Frame(master = window)
 url = tk.StringVar()
 textBox = ttk.Entry(master = inputFrame, textvariable = url, width = 75)
-videoButton = ttk.Button(master = inputFrame, text = "Download Video", command = getVideo, width = 20)
+videoButton = ttk.Button(master = inputFrame, text = "Download Video", command = validateVideoUrl, width = 20)
 audioButton = ttk.Button(master = inputFrame, text = "Download Only Audio", command = getAudio)
 
 textBox.pack(side = "left", padx = 5)
