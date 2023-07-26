@@ -1,25 +1,41 @@
 import tkinter as tk
 import ttkbootstrap as ttk
 import os
+import threading
 from pytube import YouTube
 
 videoDirectory = os.path.join("Downloads", "Video")
 audioDirectory = os.path.join("Downloads", "Audio")
 
-# Functions
-def videoButtonClick():
+def printMessage(message):
+    outString.set(message)
+    
+    window.after(5000)
+
+def clearMessage():
+    outString.set("")
+
+def getVideo():
+    printMessage("Downloading video...")
     urlString = url.get()
     yt = YouTube(urlString)
-    outString.set("Downloading Video...")
     titleString.set(yt.title)
+    
+    #create a thread for downloading a video do that the GUI doesn't lock up and crash
+    downloadThread = threading.Thread(target = downloadVideo, args = (yt,))
+    downloadThread.start()
+
+# Functions
+def downloadVideo(yt):
     yd = yt.streams.get_highest_resolution()
     yd.download(videoDirectory)
-    completeString.set("Download Complete")
+
+    window.after(0, lambda: completeString.set("Download complete"))
 
 def audioButtonClick():
+    printMessage("Downloading audio...")
     urlString = url.get()
     yt = YouTube(urlString)
-    outString.set("Downloading Audio...")
     titleString.set(yt.title)
     yd = yt.streams.get_audio_only()
     yd.download(audioDirectory)
@@ -41,7 +57,7 @@ heading2.pack()
 inputFrame = ttk.Frame(master = window)
 url = tk.StringVar()
 textBox = ttk.Entry(master = inputFrame, textvariable = url, width = 75)
-videoButton = ttk.Button(master = inputFrame, text = "Download Video", command = videoButtonClick, width = 20)
+videoButton = ttk.Button(master = inputFrame, text = "Download Video", command = getVideo, width = 20)
 audioButton = ttk.Button(master = inputFrame, text = "Download Only Audio", command = audioButtonClick)
 
 textBox.pack(side = "left", padx = 5)
