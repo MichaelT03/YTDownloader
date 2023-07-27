@@ -1,2 +1,5 @@
 # ignores the downloads folder
 Downloads
+
+# ignores the documentation for class
+DocsAndInfo.txt

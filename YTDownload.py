@@ -1,5 +1,3 @@
-#to run program ttkbootstrap and pytube need to be installed
-#the program will create a folder called "Downloads" in the same directory as the .py file
 import tkinter as tk
 import ttkbootstrap as ttk
 import re
