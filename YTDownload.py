@@ -21,6 +21,7 @@ def validateVideoUrl():
     #reinitialize outputs
     outString.set(" ")
     titleString.set(" ")
+    waitString.set(" ")
     completeString.set(" ")
     
     urlString = url.get()
@@ -40,6 +41,7 @@ def getVideo(urlString):
         titleString.set("The video may be region blocked, age restricted, or private")
     else:
         titleString.set(yt.title)
+        waitString.set("Please wait for 'Download Complete' prompt")
 
         #create a thread for downloading a video so that the GUI doesn't lock up and crash if it takes to long to download
         #this allows videos longer than ~10 minutes to be downloaded
@@ -47,16 +49,23 @@ def getVideo(urlString):
         downloadThread.start()
     
 def downloadVideo(yt):
-    yd = yt.streams.get_highest_resolution()
-    yd.download(videoDirectory)
+    try:
+        yd = yt.streams.get_highest_resolution()
+    except VideoUnavailable:
+        outString.set("An error has occured while trying to access video")
+        titleString.set("The video may be region blocked, age restricted, or private")
+        waitString.set(" ")
+    else:
+        yd.download(videoDirectory)
 
-    window.after(0, lambda: completeString.set("Download complete"))
+        window.after(0, lambda: completeString.set("Download complete"))
 
 ## Audio functions
 def validateAudioUrl():
     #reinitialize outputs
     outString.set(" ")
     titleString.set(" ")
+    waitString.set(" ")
     completeString.set(" ")
 
     urlString = url.get()
@@ -76,16 +85,23 @@ def getAudio(urlString):
         titleString.set("The video may be region blocked, age restricted, or private")
     else:
         titleString.set(yt.title)
+        waitString.set("Please wait for 'Download Complete' prompt")
 
         # agrs has a comma because it is a touple
         downloadThread = threading.Thread(target = downloadAudio, args = (yt,))
         downloadThread.start()
 
 def downloadAudio(yt):
-    yd = yt.streams.get_audio_only()
-    yd.download(audioDirectory)
+    try:
+        yd = yt.streams.get_audio_only()
+    except VideoUnavailable:
+        outString.set("An error has occured while trying to access video")
+        titleString.set("The video may be region blocked, age restricted, or private")
+        waitString.set(" ")
+    else:
+        yd.download(audioDirectory)
 
-    window.after(0, lambda: completeString.set("Download complete"))
+        window.after(0, lambda: completeString.set("Download complete"))
 
 
 # Tkinter #
@@ -116,14 +132,17 @@ inputFrame.pack(pady = 20)
 # Outputs
 outString = tk.StringVar()
 titleString = tk.StringVar()
+waitString = tk.StringVar()
 completeString = tk.StringVar()
 
 outLabel = ttk.Label(master = window, font = "Calibri 24", textvariable = outString)
 vidTitle = ttk.Label(master = window, font = "Calibri 12", textvariable = titleString)
+waitLabel = ttk.Label(master = window, font = "Calibri 24", textvariable = waitString)
 completeLabel = ttk.Label(master = window, font = "Calibri 24", textvariable = completeString)
 
 outLabel.pack(pady = 20)
 vidTitle.pack()
+waitLabel.pack(pady = 20)
 completeLabel.pack(pady = 30)
 
 # Run
