@@ -8,7 +8,7 @@ from pytube import YouTube
 videoDirectory = os.path.join("Downloads", "Video")
 audioDirectory = os.path.join("Downloads", "Audio")
 
-# Functions
+# Functions #
 def printMessage(message):
     outString.set(message)
     
@@ -75,6 +75,8 @@ def downloadAudio(yt):
 
     window.after(0, lambda: completeString.set("Download complete"))
 
+
+# Tkinter #
 
 # Window
 window = ttk.Window(themename = "darkly")
