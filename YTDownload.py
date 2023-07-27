@@ -9,7 +9,16 @@ videoDirectory = os.path.join("Downloads", "Video")
 audioDirectory = os.path.join("Downloads", "Audio")
 
 # Functions
+def printMessage(message):
+    outString.set(message)
+    
+    # Wait 2 seconds before beginning download
+    window.after(2000)
 
+def clearMessage():
+    outString.set("")
+
+## Video functions
 def validateVideoUrl():
     outString.set(" ")
     titleString.set(" ")
@@ -22,16 +31,6 @@ def validateVideoUrl():
     else:
         getVideo(urlString)
 
-def printMessage(message):
-    outString.set(message)
-    
-    # Wait 2 seconds before beginning download
-    window.after(2000)
-
-def clearMessage():
-    outString.set("")
-
-## Video functions
 def getVideo(urlString):
     printMessage("Downloading video...")
     yt = YouTube(urlString)
