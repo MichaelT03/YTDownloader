@@ -15,11 +15,9 @@ def printMessage(message):
     # Wait 2 seconds before beginning download
     window.after(2000)
 
-def clearMessage():
-    outString.set("")
-
 ## Video functions
 def validateVideoUrl():
+    #reinitialize outputs
     outString.set(" ")
     titleString.set(" ")
     completeString.set(" ")
@@ -37,6 +35,7 @@ def getVideo(urlString):
     titleString.set(yt.title)
     
     #create a thread for downloading a video so that the GUI doesn't lock up and crash if it takes to long to download
+    #this allows videos longer than ~10 minutes to be downloaded
     downloadThread = threading.Thread(target = downloadVideo, args = (yt,))
     downloadThread.start()
 
@@ -47,9 +46,22 @@ def downloadVideo(yt):
     window.after(0, lambda: completeString.set("Download complete"))
 
 ## Audio functions
-def getAudio():
-    printMessage("Downloading audio...")
+def validateAudioUrl():
+    #reinitialize outputs
+    outString.set(" ")
+    titleString.set(" ")
+    completeString.set(" ")
+
     urlString = url.get()
+
+    if not re.match("https?://(www\.)?youtube\.com/watch\?v=", urlString):
+        outString.set("Invalid YouTube URL")
+    else:
+        getAudio(urlString)
+
+def getAudio(urlString):
+    printMessage("Downloading audio...")
+
     yt = YouTube(urlString)
     titleString.set(yt.title)
 
@@ -80,7 +92,7 @@ inputFrame = ttk.Frame(master = window)
 url = tk.StringVar()
 textBox = ttk.Entry(master = inputFrame, textvariable = url, width = 75)
 videoButton = ttk.Button(master = inputFrame, text = "Download Video", command = validateVideoUrl, width = 20)
-audioButton = ttk.Button(master = inputFrame, text = "Download Only Audio", command = getAudio)
+audioButton = ttk.Button(master = inputFrame, text = "Download Only Audio", command = validateAudioUrl)
 
 textBox.pack(side = "left", padx = 5)
 videoButton.pack(side = "left", padx = 5)
