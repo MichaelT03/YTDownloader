@@ -4,6 +4,7 @@ import re
 import os
 import threading
 from pytube import YouTube
+from pytube.exceptions import VideoUnavailable
 
 videoDirectory = os.path.join("Downloads", "Video")
 audioDirectory = os.path.join("Downloads", "Audio")
@@ -31,14 +32,20 @@ def validateVideoUrl():
 
 def getVideo(urlString):
     printMessage("Downloading video...")
-    yt = YouTube(urlString)
-    titleString.set(yt.title)
-    
-    #create a thread for downloading a video so that the GUI doesn't lock up and crash if it takes to long to download
-    #this allows videos longer than ~10 minutes to be downloaded
-    downloadThread = threading.Thread(target = downloadVideo, args = (yt,))
-    downloadThread.start()
 
+    try:
+        yt = YouTube(urlString)
+    except VideoUnavailable:
+        outString.set("An error has occured while trying to access video")
+        titleString.set("The video may be region blocked, age restricted, or private")
+    else:
+        titleString.set(yt.title)
+
+        #create a thread for downloading a video so that the GUI doesn't lock up and crash if it takes to long to download
+        #this allows videos longer than ~10 minutes to be downloaded
+        downloadThread = threading.Thread(target = downloadVideo, args = (yt,))
+        downloadThread.start()
+    
 def downloadVideo(yt):
     yd = yt.streams.get_highest_resolution()
     yd.download(videoDirectory)
@@ -62,12 +69,17 @@ def validateAudioUrl():
 def getAudio(urlString):
     printMessage("Downloading audio...")
 
-    yt = YouTube(urlString)
-    titleString.set(yt.title)
+    try:
+        yt = YouTube(urlString)
+    except VideoUnavailable:
+        outString.set("An error has occured while trying to access video")
+        titleString.set("The video may be region blocked, age restricted, or private")
+    else:
+        titleString.set(yt.title)
 
-    # agrs has a comma because it is a touple
-    downloadThread = threading.Thread(target = downloadAudio, args = (yt,))
-    downloadThread.start()
+        # agrs has a comma because it is a touple
+        downloadThread = threading.Thread(target = downloadAudio, args = (yt,))
+        downloadThread.start()
 
 def downloadAudio(yt):
     yd = yt.streams.get_audio_only()
