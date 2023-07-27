@@ -1,2 +1,2 @@
 # YTDownloader
-## Accepts a Youtube URL and downloads the video in an mp4 or mp3 format
+## Accepts a Youtube URL and downloads the video or downloads just the audio
