@@ -3,3 +3,6 @@ Downloads
 
 # ignores the documentation for class
 DocsAndInfo.txt
+
+# ignores the pycache
+__pycache__
