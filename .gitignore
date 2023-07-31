@@ -5,4 +5,4 @@ Downloads
 DocsAndInfo.txt
 
 # ignores the pycache
-# __pycache__
+__pycache__
